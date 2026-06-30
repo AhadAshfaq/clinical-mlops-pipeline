@@ -5,7 +5,7 @@ An end-to-end Machine Learning Operations (MLOps) architecture designed to train
 ## 🚀 Enterprise Architecture Overview
 This repository demonstrates a production-ready ML lifecycle, moving beyond static notebooks into a fully containerized microservice architecture. 
 
-* **Data Engineering:** Simulates and preprocesses sparse, irregularly sampled patient trajectories, handling informative missingness via forward-filling imputation.
+* **Data Engineering:** Generates **synthetic/dummy EHR data** (ensuring zero GDPR/privacy violations) to simulate sparse, irregularly sampled patient trajectories, handling informative missingness via forward-filling imputation.
 * **Model Training:** PyTorch-based neural network autoencoder.
 * **Experiment Tracking:** MLflow integration for automated hyperparameter logging and model registry.
 * **Model Serving:** High-performance REST API built with FastAPI and Pydantic for real-time inference.
@@ -17,3 +17,11 @@ This repository demonstrates a production-ready ML lifecycle, moving beyond stat
    ```bash
    git clone https://github.com/AhadAshfaq/clinical-mlops-pipeline.git
    cd clinical-mlops-pipeline
+
+2. Generate the synthetic clinical dataset:
+    ```bash
+   python data_ingestion/extract.py
+
+3. Spin up the MLOps architecture:
+    ```bash
+   docker-compose up --build
