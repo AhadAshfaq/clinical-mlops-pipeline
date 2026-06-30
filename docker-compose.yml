@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # 1. The Experiment Tracking Server (MLflow)
+  mlflow:
+    image: python:3.10-slim
+    ports:
+      - "5000:5000"
+    command: >
+      bash -c "pip install mlflow && mlflow server --host 0.0.0.0 --port 5000 --allowed-hosts localhost,localhost:5000,mlflow,mlflow:5000,127.0.0.1,127.0.0.1:5000"
+    volumes:
+      - ./mlruns:/mlruns
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 180s
+
+  # 2. The Training Pipeline
+  trainer:
+    build: 
+      context: ./training_pipeline
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data   
+      - ./mlruns:/mlruns   
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+
+  # 3. The Production Model API (FastAPI)
+  api:
+    build: 
+      context: ./serving_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      trainer:
+        condition: service_completed_successfully
+      mlflow:
+        condition: service_healthy
+    volumes:
+      - ./mlruns:/mlruns   
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
