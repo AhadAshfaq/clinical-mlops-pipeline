@@ -15,5 +15,5 @@ This repository demonstrates a production-ready ML lifecycle, moving beyond stat
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/AhadAshfaq/clinical-mlops-pipeline.git](https://github.com/AhadAshfaq/clinical-mlops-pipeline.git)
+   git clone https://github.com/AhadAshfaq/clinical-mlops-pipeline.git
    cd clinical-mlops-pipeline
